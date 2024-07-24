@@ -2,7 +2,6 @@ import streamlit as st
 import os
 import re
 import numpy as np
-import cv2
 import matplotlib.pyplot as plt
 from PIL import Image
 from skimage import measure
@@ -99,7 +98,8 @@ def generate_path(dataset, filename):
     Generate the path for the corresponding mask or image file based on the dataset and filename.
     """
     exp_no = extract_exp_number(filename)[0]
-    im_or_mask = 'image' if len(np.unique(cv2.imread(filename))) > 2 else 'mask'
+    im_array = np.array(Image.open(image_path))
+    im_or_mask = 'image' if len(np.unique(im_array)) > 2 else 'mask'
     if dataset == 'camad':
         if im_or_mask == 'image':
             # Image to mask conversion for camad
