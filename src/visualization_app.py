@@ -135,7 +135,11 @@ uploaded_mask = st.sidebar.file_uploader("Upload a Mask", type=["png", "jpg", "j
 
 
 def suggest_pair(uploaded_file, dataset):
-    return generate_path(dataset, uploaded_file.name)
+    try:
+        suggested_path = generate_path(dataset, uploaded_file.name)
+        return suggested_path
+    except Exception as e:
+        return
 
 
 suggested_image = None
