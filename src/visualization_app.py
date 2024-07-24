@@ -124,7 +124,7 @@ def generate_path(dataset, filename):
     return "Unknown pattern"
 
 
-st.title("Image and Mask Overlay Visualization")
+st.title("Image and Mask Overlay Visualization for WHAD and CAMAD Datasets")
 
 st.sidebar.header("Select Dataset")
 dataset = st.sidebar.selectbox("Choose the dataset:", ["camad", "whad"])
