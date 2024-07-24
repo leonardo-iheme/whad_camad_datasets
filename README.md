@@ -1,6 +1,6 @@
 # Wound Healing Assay Dataset (WHAD) and Cell Adhesion and Motility Assay Dataset (CAMAD)
 
-This repository contains the codes for visualizing and processing the Wound Healing Assay Dataset (WHAD) and Cell Adhesion and Motility Assay Dataset (CAMAD) datasets. The datasets are available at [Zenodo](https://zenodo.org/record/4640734#.YH9Q9pMzZQI).
+This repository contains the codes for visualizing and processing the Wound Healing Assay Dataset (WHAD) and Cell Adhesion and Motility Assay Dataset (CAMAD) datasets. The datasets are available at XXXX.
 
 The WHAD dataset contains images of MCF7 and MCF10A cells in 2D wound healing assays. The CAMAD dataset contains images and videos of MCF7 cells in 3D cell adhesion and motility assays.
 
@@ -61,13 +61,19 @@ The `src` directory contains the scripts for visualizing the datasets and proces
 ## Usage
 Clone the repository using the following command:
 ```bash
-git clone
+git clone https://github.com/leonardo-iheme/whad_camad_datasets.git
 ```
 Install the required packages using the following command:
 ```bash
 pip install -r requirements.txt
 ```
+Download the datasets from XXXX and extract the contents to the `data` directory.  
 To visualize the datasets, run the streamlit app using the following command:
 ```bash
 streamlit run src/visualization_app.py --server.enableXsrfProtection false
 ```
+if the app does not open automatically, open a browser and navigate to `http://localhost:8501/`.
+
+### Citation
+If you use the datasets in your research, please cite the following papers:
+- WHAD and CAMAD datasets: XXXX
