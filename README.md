@@ -74,6 +74,8 @@ streamlit run src/visualization_app.py --server.enableXsrfProtection false
 ```
 if the app does not open automatically, open a browser and navigate to `http://localhost:8501/`.
 
+You can also run the streamlit app on the streamlit cloud using the following link: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://whadcamaddataset.streamlit.app/)
+
 ### Citation
 If you use the datasets in your research, please cite the following papers:
 
