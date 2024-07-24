@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import re
 import numpy as np
+import cv2
 import matplotlib.pyplot as plt
 from PIL import Image
 from skimage import measure
@@ -98,25 +99,25 @@ def generate_path(dataset, filename):
     Generate the path for the corresponding mask or image file based on the dataset and filename.
     """
     exp_no = extract_exp_number(filename)[0]
-
+    im_or_mask = 'image' if len(np.unique(cv2.imread(filename))) > 2 else 'mask'
     if dataset == 'camad':
-        if ".tif" in filename:
+        if im_or_mask == 'image':
             # Image to mask conversion for camad
             mask_filename = filename.replace(".tif", ".png")
             mask_directory = f"../data/camad/exp{exp_no}/masks/"
             return os.path.join(mask_directory, mask_filename)
-        elif ".png" in filename:
+        elif im_or_mask in 'mask':
             # Mask to image conversion for camad
             image_filename = filename.replace(".png", ".tif")
             image_directory = f"../data/exp{exp_no}/images/"
             return os.path.join(image_directory, image_filename)
     elif dataset == 'whad':
-        if "_mask.png" in filename:
+        if im_or_mask in 'mask':
             # Mask to image conversion for whad
             image_filename = filename.replace("_mask.png", ".tif")
             image_directory = f"../data/exp{exp_no}/images/"
             return os.path.join(image_directory, image_filename)
-        elif ".tif" in filename:
+        elif im_or_mask == 'image':
             # Image to mask conversion for whad
             mask_filename = filename.replace(".tif", "_mask.png")
             mask_directory = f"../data/exp{exp_no}/masks/"
