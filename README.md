@@ -76,7 +76,8 @@ if the app does not open automatically, open a browser and navigate to `http://l
 
 ### Citation
 If you use the datasets in your research, please cite the following papers:
-- WHAD and CAMAD datasets: XXXX
+
+WHAD and CAMAD datasets: XXXX
 
 if you use the code in this repository, please cite the following repository:
 [![DOI](https://zenodo.org/badge/833117199.svg)](https://zenodo.org/doi/10.5281/zenodo.12805890)
