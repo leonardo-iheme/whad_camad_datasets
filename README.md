@@ -10,7 +10,7 @@ The directory structure for the datasets is as follows:
 ..\data\whad
 |-- images
 | |-- MCF7
-| | |-- ... (assay subfolders, e.g., "24h_EGF")
+| | |-- ... (assay subfolders)
 | | | |-- assay_name_frame_001.tif
 | | | -- ...
 | |-- MCF10A\
