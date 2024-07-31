@@ -70,16 +70,16 @@ pip install -r requirements.txt
 Download the datasets from XXXX and extract the contents to the `data` directory.  
 To visualize the datasets, run the streamlit app using the following command:
 ```bash
-streamlit run src/visualization_app.py --server.enableXsrfProtection false
+streamlit run code/visualization_app.py --server.enableXsrfProtection false
 ```
 if the app does not open automatically, open a browser and navigate to `http://localhost:8501/`.
 
 You can also run the streamlit app on the streamlit cloud using the following link: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://whadcamaddataset.streamlit.app/)
 
 ### Citation
-If you use the datasets in your research, please cite the following papers:
+If you use the datasets in your research, please cite as follows:
 
-WHAD and CAMAD datasets: XXXX
+Iheme, L. O., Onal, S., ERDEM, Y. S., Ucar, M., Yalcin-Ozuysal, O., Pesen-Okvur, D., Behcet U., T., & Unay, D. (2024). Wound Healing Assay Dataset (WHAD) and Cell Adhesion and Motility Assay Dataset (CAMAD) (1.0.0-alpha) [Data set]. IEEE. https://doi.org/10.5281/zenodo.12806149
 
 if you use the code in this repository, please cite the following repository:
 [![DOI](https://zenodo.org/badge/833117199.svg)](https://zenodo.org/doi/10.5281/zenodo.12805890)
