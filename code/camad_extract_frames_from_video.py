@@ -68,5 +68,5 @@ def extract_frames(video_path: str, save_dir: str, start_time: float, interval: 
 
 if __name__ == '__main__':
     extract_frames('../data/camad/videos/exp3_glassrawmatrixconfluent231liveimaging8aug.20fps.blackaddedfor30sec.avi',
-                   '../data/short_videos',
+                   '../results',
                    1.5, 10, 60)

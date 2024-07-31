@@ -99,8 +99,8 @@ def overlay_mask(image_path: str,
 if __name__ == '__main__':
     exp = 1
     image_no = 2
-    im_path = f"../data/cmad/images/exp1/images/exp{exp}_{image_no}.tif"
-    msk_path = f"../data/cmad/images/exp1/masks/exp{exp}_{image_no}.png"
+    im_path = f"../data/camad/images/exp1/images/exp{exp}_{image_no}.tif"
+    msk_path = f"../data/camad/images/exp1/masks/exp{exp}_{image_no}.png"
     # im_path = f"../data/whad/images/MCF7/inf1/exp2/MCF7-LacZ-p1-15-17.11.2016/MCF7_SEMA6D_wound_healing_Mark_and_Find_001_MCF7_LacZ_p001_t00_ch00.tif"
     # msk_path = im_path.replace("images", "masks").replace(".tif", "_mask.png")
-    overlay_mask(im_path, msk_path, transparency=0.2, boundary=False, overlay_color='magenta', save_path=None)
+    overlay_mask(im_path, msk_path, transparency=0.2, boundary=False, overlay_color='magenta', save_path='../results/overlay.png')
