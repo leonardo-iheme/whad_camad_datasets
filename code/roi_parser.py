@@ -1,18 +1,13 @@
-# Src: https://github.com/hadim/read-roi/blob/master/read_roi/_read_roi.py
-# Usage:
-#   python src\roi_parser.py -src data\camad\rois\exp1_roi.zip -fmt camad
-
-
 import os
 import struct
 import zipfile
 import logging
-
 import numpy as np
 import cv2
 import re
 import ntpath
 import argparse
+from typing import Dict, List, Tuple, Union, Optional
 
 
 class UnrecognizedRoiType(Exception):
@@ -98,28 +93,28 @@ PATHITERATOR_TYPES = dict(SEG_MOVETO=0,
                           SEG_CLOSE=4)
 
 
-def _get_byte(data, base):
+def _get_byte(data: bytes, base: Union[int, List[int]]) -> Union[int, List[int]]:
     if isinstance(base, int):
         return data[base]
     elif isinstance(base, list):
         return [data[b] for b in base]
 
 
-def _get_uint16(data, base):
+def _get_uint16(data: bytes, base: int) -> int:
     b0 = data[base]
     b1 = data[base + 1]
     n = (b0 << 8) + b1
     return n
 
 
-def _get_int16(data, base):
+def _get_int16(data: bytes, base: int) -> int:
     n = _get_uint16(data, base)
     if n >= 32768:  # 2**15
         n -= 65536  # 2**16
     return n
 
 
-def _get_maybe_int16(data, base, thr=65036):
+def _get_maybe_int16(data: bytes, base: int, thr: int = 65036) -> int:
     """
     Load data which might be int16 or uint16.
     """
@@ -135,7 +130,7 @@ def _get_maybe_int16(data, base, thr=65036):
     return n
 
 
-def _get_uint32(data, base):
+def _get_uint32(data: bytes, base: int) -> int:
     b0 = data[base]
     b1 = data[base + 1]
     b2 = data[base + 2]
@@ -144,12 +139,12 @@ def _get_uint32(data, base):
     return n
 
 
-def _get_float(data, base):
+def _get_float(data: bytes, base: int) -> float:
     s = struct.pack('I', _get_uint32(data, base))
     return struct.unpack('f', s)[0]
 
 
-def _get_counter(data, base):
+def _get_counter(data: bytes, base: int) -> Tuple[int, int]:
     """
     See setCounters() / getCounters() methods in IJ source, ij/gui/PointRoi.java.
     """
@@ -165,7 +160,7 @@ def _get_counter(data, base):
     return counter, position
 
 
-def _get_point_counters(data, hdr2Offset, n_coordinates, size):
+def _get_point_counters(data: bytes, hdr2Offset: int, n_coordinates: int, size: int) -> Optional[Tuple[List[int], List[int]]]:
     if hdr2Offset == 0:
         return None
 
@@ -186,7 +181,7 @@ def _get_point_counters(data, hdr2Offset, n_coordinates, size):
     return counters, positions
 
 
-def _pathiterator2paths(shape_array):
+def _pathiterator2paths(shape_array: List[float]) -> List[List[Tuple[float, ...]]]:
     """
     Converts a shape array in PathIterator notation to polygon (or curved)
     paths.
@@ -259,7 +254,7 @@ def _pathiterator2paths(shape_array):
     return paths
 
 
-def _extract_basic_roi_data(data):
+def _extract_basic_roi_data(data: bytes) -> Tuple[Dict[str, Union[str, int, float, List[Tuple[float, ...]]]], Tuple[int, int, int, int, int, int, int, int, int, int]]:
     size = len(data)
     code = '>'
 
@@ -462,17 +457,22 @@ def _extract_basic_roi_data(data):
         raise UnrecognizedRoiType("Unrecognized ROI specifier: %d" % (roi_type,))
 
 
-def read_roi_file(fpath):
+def read_roi_file(fpath: Union[str, zipfile.ZipExtFile]) -> Optional[Dict[str, Union[str, int, float, List[Tuple[float, ...]]]]]:
     """
-    """
+    Reads an ROI file and returns a dictionary representation of the ROI.
 
+    Args:
+        fpath (Union[str, zipfile.ZipExtFile]): Path to the ROI file or a ZipExtFile object.
+
+    Returns:
+        Optional[Dict[str, Union[str, int, float, List[Tuple[float, ...]]]]]: Dictionary representation of the ROI.
+    """
     if isinstance(fpath, zipfile.ZipExtFile):
         data = fpath.read()
         name = os.path.splitext(os.path.basename(fpath.name))[0]
     elif isinstance(fpath, str):
-        fp = open(fpath, 'rb')
-        data = fp.read()
-        fp.close()
+        with open(fpath, 'rb') as fp:
+            data = fp.read()
         name = os.path.splitext(os.path.basename(fpath))[0]
     else:
         logging.error("Can't read {}".format(fpath))
@@ -519,8 +519,15 @@ def read_roi_file(fpath):
     return {name: roi}
 
 
-def read_roi_zip(zip_path):
+def read_roi_zip(zip_path: str) -> List[Optional[Dict[str, Union[str, int, float, List[Tuple[float, ...]]]]]]:
     """
+    Reads a zip file containing ROI files and returns a list of dictionary representations of the ROIs.
+
+    Args:
+        zip_path (str): Path to the zip file containing ROI files.
+
+    Returns:
+        List[Optional[Dict[str, Union[str, int, float, List[Tuple[float, ...]]]]]]: List of dictionary representations of the ROIs.
     """
     rois = []
     zf = zipfile.ZipFile(zip_path)
@@ -530,14 +537,18 @@ def read_roi_zip(zip_path):
     return rois
 
 
-def roi_to_mask(roi_file_dict, roi_folder_name, img_size, format_type):
+def roi_to_mask(roi_file_dict: Dict[str, Union[str, int, float, List[Tuple[float, ...]]]], roi_folder_name: str, img_size: Tuple[int, int], format_type: str) -> Tuple[np.ndarray, str]:
     """
     Parses single @roi_file_dict into a mask image and corresponding mask file name.
-    :param img_size: Size of the mask image (width, height).
-    :param roi_file_dict: Dictionary for roi file as returned by "read_roi_zip" method.
-    :param roi_folder_name: Base name for roi files.
-    :param format_type: Type of format ('camad' or 'whad').
-    :return: Mask image and mask image name.
+
+    Args:
+        roi_file_dict (Dict[str, Union[str, int, float, List[Tuple[float, ...]]]]): Dictionary for roi file as returned by "read_roi_zip" method.
+        roi_folder_name (str): Base name for roi files.
+        img_size (Tuple[int, int]): Size of the mask image (width, height).
+        format_type (str): Type of format ('camad' or 'whad').
+
+    Returns:
+        Tuple[np.ndarray, str]: Mask image and mask image name.
     """
     mask_img = np.zeros((img_size[1], img_size[0]), dtype=np.uint8)
     contour = []
@@ -571,13 +582,15 @@ def roi_to_mask(roi_file_dict, roi_folder_name, img_size, format_type):
     return mask_img, mask_img_name
 
 
-def roi_zip_to_masks(roi_zip_path, format_type, out_folder_dir=""):
+def roi_zip_to_masks(roi_zip_path: str, format_type: str, out_folder_dir: str = "") -> None:
     """
     Parses roi zip file generated by ImageJ in specified format, and produces
     corresponding mask images at @out_folder_dir if specified or at parent directory of @roi_zip_path.
-    :param roi_zip_path: Path for zip file of roi files including polygons in ImageJ fashion.
-    :param out_folder_dir: Target directory for saving resulting mask images.
-    :param format_type: Type of format ('camad' or 'whad').
+
+    Args:
+        roi_zip_path (str): Path for zip file of roi files including polygons in ImageJ fashion.
+        format_type (str): Type of format ('camad' or 'whad').
+        out_folder_dir (str, optional): Target directory for saving resulting mask images. Defaults to "".
     """
     folder_dir, folder_base_name = ntpath.split(roi_zip_path)
     if out_folder_dir:
@@ -629,10 +642,6 @@ def roi_zip_to_masks(roi_zip_path, format_type, out_folder_dir=""):
 
 
 if __name__ == "__main__":
-    # roi_zip_path = "/home/erdem/Downloads/MCF7-LACZ-p2-25.11.16.zip"
-    # roi_zip_to_masks(roi_zip_path)
-    # roi_zip_path = r"..\data\camad\rois\exp1_roi.zip"
-    # roi_zip_to_masks(roi_zip_path, format_type='camad')
     parser = argparse.ArgumentParser(
         description="Parses roi zip file generated by ImageJ in 'wound closing assay annotation' format, and"
                     " produces corresponding mask images. Roi files include polygon points.\nExample usage: "
