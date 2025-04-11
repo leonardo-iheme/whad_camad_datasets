@@ -1,6 +1,6 @@
-numpy==1.23.0
-opencv_python==4.6.0.66
-Pillow==10.4.0
-scikit_image==0.19.3
-streamlit==1.36.0
-matplotlib==3.8.4
+streamlit>=1.15.0
+numpy>=1.22.0
+matplotlib>=3.5.0
+pillow>=9.0.0
+scikit-image>=0.19.0
+requests>=2.27.0
